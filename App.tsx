@@ -1,96 +1,57 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import Home from './src/Home'; // Replace with your Home component
+import AddTask from './src/AddTask'; // Replace with your AddTask component
+import TaskListScreen from './src/TaskListScreen';
+import colors from './src/constants/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import Home from './src/Home';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const HomeStack = () => {
+    return (
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="TaskListScreen" component={TaskListScreen} />
+      </Stack.Navigator>
+    );
   };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Home/>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: colors.brandColor,
+            height: 75,
+          },
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName = 'home';
+            if (route.name === 'Home') {
+              iconName = 'home';
+            } else if (route.name === 'AddTask') {
+              iconName = 'add';
+            }
+            return <Icon name={iconName} size={35} color={'white'} />;
+          },
+        })}>
+        <Stack.Screen name="HomeStack" component={HomeStack} />
+        <Tab.Screen name="AddTask" component={AddTask} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
