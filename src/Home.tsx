@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
   },
   taskContainer: {
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     borderRadius: 8,
     height: 200,
     width: '100%',
